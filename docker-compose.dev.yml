@@ -1,0 +1,9 @@
+# Override SOLO desarrollo local: expone pg/redis en puertos altos
+# para evitar choques (5440 lo usa otro proyecto). Uso:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db redis
+# Prod/Dokploy usan docker-compose.yml tal cual (§8.3, sin puertos).
+services:
+  db:
+    ports: ["5433:5432"]
+  redis:
+    ports: ["6380:6379"]

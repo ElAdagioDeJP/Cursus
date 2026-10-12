@@ -1,0 +1,62 @@
+openapi: 3.1.0
+info:
+  title: Cursus API
+  version: 0.1.0
+  description: MVP — health, OAuth (Auth.js), MCP cursus_ (S4).
+servers:
+  - url: http://localhost:3000
+  - url: https://cursos.delfostrading.com
+paths:
+  /api/health:
+    get:
+      summary: Estado del sistema
+      parameters:
+        - in: query
+          name: deep
+          schema: { type: string }
+          description: Con ?deep=1 verifica Postgres + Redis.
+      responses:
+        "200": { description: ok }
+        "503": { description: degradado }
+  /api/auth/{provider}:
+    get:
+      summary: Flujo OAuth (Auth.js v5, providers github + google)
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          schema: { type: string, enum: [github, google] }
+      responses:
+        "302": { description: redirect al proveedor }
+  /api/mcp:
+    post:
+      summary: Servidor MCP Streamable HTTP (stateless, JSON). Bearer cur2_sk_…
+      description: |
+        Protocolo JSON-RPC 2.0. Métodos: initialize, tools/list, tools/call,
+        resources/list, resources/read, prompts/list, prompts/get, ping.
+        15 tools con prefijo cursus_. Scopes: read, issues:write, issues:delete.
+        Rate-limit: 60/min lectura, 20/min escritura, 5/min bulk (429+Retry-After).
+      responses:
+        "200": { description: resultado JSON-RPC }
+        "202": { description: solo notificaciones }
+        "400": { description: JSON o petición inválida }
+        "401": { description: sin autorización }
+        "429": { description: límite excedido }
+components:
+  schemas:
+    Issue:
+      type: object
+      required: [id, identifier, title, status, priority]
+      properties:
+        id: { type: string, format: uuid }
+        identifier: { type: string, example: CUR-123 }
+        title: { type: string, minLength: 3, maxLength: 200 }
+        status: { type: string, enum: [backlog, todo, in_progress, review, done, canceled] }
+        priority: { type: integer, minimum: 0, maximum: 4 }
+    Project:
+      type: object
+      required: [id, key, name]
+      properties:
+        id: { type: string, format: uuid }
+        key: { type: string, pattern: "^[A-Z]{2,6}$" }
+        name: { type: string }

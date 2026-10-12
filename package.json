@@ -1,0 +1,52 @@
+{
+  "name": "cursus",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "bun@1.4.2",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:validate": "bun src/db/validate.ts",
+    "db:migrate": "bun src/db/migrate.ts up",
+    "db:seed": "bun src/db/seeds.ts",
+    "mcp:mint": "bun src/mcp/mint.ts",
+    "db:dry-run": "bun src/db/migrate.ts --dry-run",
+    "db:status": "bun src/db/migrate.ts status"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "cmdk": "^1.1.1",
+    "ioredis": "^5.6.1",
+    "lucide-react": "^1.55.0",
+    "motion": "^14.1.0",
+    "next": "^16.0.0",
+    "next-auth": "^5.0.0-beta.29",
+    "nuqs": "^2.4.3",
+    "postgres": "^3.4.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "zod": "^4.1.5",
+    "zustand": "^5.0.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@playwright/test": "^1.55.0",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/node": "^24.3.1",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "dotenv": "^18.0.7",
+    "tailwindcss": "^4.1.12",
+    "typescript": "^5.9.2",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
+  }
+}

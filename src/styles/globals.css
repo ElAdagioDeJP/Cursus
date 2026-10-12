@@ -1,0 +1,346 @@
+/* Fuentes vía next/font (src/app/fonts.ts, display:swap, fallback system-ui).
+   Sin @import de Google Fonts: build offline-safe. */
+@import "tailwindcss";
+
+/* ============================================================
+   CURSUS — Identidad "Carril / C continua"
+   Dirección final: Señal Naranja + Tinta Petróleo sobre Zinc Cálido.
+   Dark por defecto (class="dark" en <html>). Sin morado Linear.
+   Todos los pares texto/fondo verificados AA (>= 4.5:1).
+   ============================================================ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Tema claro (base) ---------- */
+:root {
+  color-scheme: light;
+
+  /* Neutros base */
+  --cursus-bg: #fafaf8; /* papel */
+  --cursus-surface: #ffffff; /* tarjetas, palette, sidebar */
+  --cursus-surface-2: #f1efe9; /* hover, code, kbd well */
+  --cursus-border: #e4e1d8; /* hairline */
+  --cursus-border-strong: #cfcaba;
+  --cursus-text-1: #131210;
+  --cursus-text-2: #3f3d39;
+  --cursus-text-3: #6e6a63;
+  --cursus-text-4: #a6a09a;
+
+  /* Acción primaria (Señal) + acento secundario (Petróleo) */
+  --cursus-primary: #c2410c; /* texto/borde/fill AA sobre papel */
+  --cursus-primary-hover: #9a3412;
+  --cursus-primary-active: #7c2d12;
+  --cursus-primary-soft: #fdeede; /* fondo suave p. badges */
+  --cursus-on-primary: #ffffff;
+  --cursus-accent: #0f766e;
+  --cursus-accent-hover: #115e59;
+  --cursus-accent-soft: #ddf3ee;
+  --cursus-on-accent: #ffffff;
+
+  /* Semánticos (texto + fill comparten tono; fondos soft aparte) */
+  --cursus-success: #15803d;
+  --cursus-success-soft: #dcf3e3;
+  --cursus-warning: #b45309;
+  --cursus-warning-soft: #fbeed3;
+  --cursus-danger: #b91c1c;
+  --cursus-danger-soft: #fbe3e1;
+  --cursus-info: #0369a1;
+  --cursus-info-soft: #dcedf9;
+
+  /* Workflow (6) — puntos de columna, legibles sobre ambos fondos */
+  --cursus-flow-backlog: #8a8478;
+  --cursus-flow-todo: #64748b;
+  --cursus-flow-in-progress: #b45309;
+  --cursus-flow-review: #0f766e;
+  --cursus-flow-done: #15803d;
+  --cursus-flow-canceled: #a6a09a;
+
+  /* Prioridad (5): 0=None 1=Urgent 2=High 3=Medium 4=Low */
+  --cursus-prio-0: #8a8478;
+  --cursus-prio-1: #b91c1c;
+  --cursus-prio-2: #c2410c;
+  --cursus-prio-3: #b45309;
+  --cursus-prio-4: #64748b;
+
+  /* Labels / Proyectos (8) — distinguibles en dark */
+  --cursus-label-ember: #c2410c;
+  --cursus-label-honey: #b45309;
+  --cursus-label-moss: #4d7c0f;
+  --cursus-label-jade: #15803d;
+  --cursus-label-lagoon: #0f766e;
+  --cursus-label-sky: #0369a1;
+  --cursus-label-rose: #be123c;
+  --cursus-label-sand: #78716c;
+
+  --cursus-focus: var(--cursus-primary);
+  --cursus-track: #e4e1d8; /* riel de scroll / skeleton */
+}
+
+/* ---------- Tema oscuro (por defecto en producto) ---------- */
+.dark {
+  color-scheme: dark;
+
+  --cursus-bg: #0c0d0f;
+  --cursus-surface: #141619;
+  --cursus-surface-2: #1c1f24;
+  --cursus-border: #262b33;
+  --cursus-border-strong: #363d48;
+  --cursus-text-1: #f2f3f0;
+  --cursus-text-2: #c2c6c9;
+  --cursus-text-3: #8b9199;
+  --cursus-text-4: #5a616b;
+
+  --cursus-primary: #ff6b2c;
+  --cursus-primary-hover: #ff8452;
+  --cursus-primary-active: #f25a1d;
+  --cursus-primary-soft: #2b1a10;
+  --cursus-on-primary: #140903;
+  --cursus-accent: #2dd4bf;
+  --cursus-accent-hover: #5eead4;
+  --cursus-accent-soft: #0d2422;
+  --cursus-on-accent: #04201d;
+
+  --cursus-success: #34d399;
+  --cursus-success-soft: #0e2a21;
+  --cursus-warning: #fbbf24;
+  --cursus-warning-soft: #2c2210;
+  --cursus-danger: #f87171;
+  --cursus-danger-soft: #2d1517;
+  --cursus-info: #38bdf8;
+  --cursus-info-soft: #10222f;
+
+  --cursus-flow-backlog: #8b9199;
+  --cursus-flow-todo: #9db2ce;
+  --cursus-flow-in-progress: #facc15;
+  --cursus-flow-review: #2dd4bf;
+  --cursus-flow-done: #34d399;
+  --cursus-flow-canceled: #5a616b;
+
+  --cursus-prio-0: #8b9199;
+  --cursus-prio-1: #f87171;
+  --cursus-prio-2: #ff6b2c;
+  --cursus-prio-3: #facc15;
+  --cursus-prio-4: #7d8da6;
+
+  --cursus-label-ember: #ff6b2c;
+  --cursus-label-honey: #facc15;
+  --cursus-label-moss: #a3e635;
+  --cursus-label-jade: #34d399;
+  --cursus-label-lagoon: #2dd4bf;
+  --cursus-label-sky: #38bdf8;
+  --cursus-label-rose: #fb7185;
+  --cursus-label-sand: #d6cdbf;
+
+  --cursus-focus: var(--cursus-primary);
+  --cursus-track: #262b33;
+}
+
+/* ---------- Bridge a Tailwind v4 ---------- */
+@theme inline {
+  --color-cursus-bg: var(--cursus-bg);
+  --color-cursus-surface: var(--cursus-surface);
+  --color-cursus-surface-2: var(--cursus-surface-2);
+  --color-cursus-border: var(--cursus-border);
+  --color-cursus-border-strong: var(--cursus-border-strong);
+  --color-cursus-text-1: var(--cursus-text-1);
+  --color-cursus-text-2: var(--cursus-text-2);
+  --color-cursus-text-3: var(--cursus-text-3);
+  --color-cursus-text-4: var(--cursus-text-4);
+
+  --color-cursus-primary: var(--cursus-primary);
+  --color-cursus-primary-hover: var(--cursus-primary-hover);
+  --color-cursus-primary-active: var(--cursus-primary-active);
+  --color-cursus-primary-soft: var(--cursus-primary-soft);
+  --color-cursus-on-primary: var(--cursus-on-primary);
+  --color-cursus-accent: var(--cursus-accent);
+  --color-cursus-accent-hover: var(--cursus-accent-hover);
+  --color-cursus-accent-soft: var(--cursus-accent-soft);
+  --color-cursus-on-accent: var(--cursus-on-accent);
+
+  --color-cursus-success: var(--cursus-success);
+  --color-cursus-success-soft: var(--cursus-success-soft);
+  --color-cursus-warning: var(--cursus-warning);
+  --color-cursus-warning-soft: var(--cursus-warning-soft);
+  --color-cursus-danger: var(--cursus-danger);
+  --color-cursus-danger-soft: var(--cursus-danger-soft);
+  --color-cursus-info: var(--cursus-info);
+  --color-cursus-info-soft: var(--cursus-info-soft);
+
+  --color-flow-backlog: var(--cursus-flow-backlog);
+  --color-flow-todo: var(--cursus-flow-todo);
+  --color-flow-in-progress: var(--cursus-flow-in-progress);
+  --color-flow-review: var(--cursus-flow-review);
+  --color-flow-done: var(--cursus-flow-done);
+  --color-flow-canceled: var(--cursus-flow-canceled);
+
+  --color-prio-0: var(--cursus-prio-0);
+  --color-prio-1: var(--cursus-prio-1);
+  --color-prio-2: var(--cursus-prio-2);
+  --color-prio-3: var(--cursus-prio-3);
+  --color-prio-4: var(--cursus-prio-4);
+
+  --color-label-ember: var(--cursus-label-ember);
+  --color-label-honey: var(--cursus-label-honey);
+  --color-label-moss: var(--cursus-label-moss);
+  --color-label-jade: var(--cursus-label-jade);
+  --color-label-lagoon: var(--cursus-label-lagoon);
+  --color-label-sky: var(--cursus-label-sky);
+  --color-label-rose: var(--cursus-label-rose);
+  --color-label-sand: var(--cursus-label-sand);
+
+  --font-display: var(
+    --font-display,
+    "Space Grotesk",
+    "Inter",
+    system-ui,
+    sans-serif
+  );
+  --font-sans: var(--font-sans, "Inter", system-ui, -apple-system, sans-serif);
+  --font-mono: var(
+    --font-mono,
+    "JetBrains Mono",
+    ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace
+  );
+}
+
+/* ---------- Base ----------
+   Escala UI densa: 12 detail / 13 secundaria / 14 base. Display solo marketing. */
+body {
+  background: var(--cursus-bg);
+  color: var(--cursus-text-1);
+  font-family: var(--font-sans, "Inter", system-ui, -apple-system, sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Selects nativos legibles en dark (el <option> hereda del OS si no se fija). */
+select option {
+  background: var(--cursus-surface);
+  color: var(--cursus-text-1);
+}
+
+/* Foco visible AA */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--cursus-focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Shape lock (documentado, no mezclar) ----------
+   6px (rounded-md): botones, inputs, selects, items Cmd+K.
+   8px (rounded-lg): tarjetas, paneles, diálogos, formularios.
+   full (rounded-full): pills, badges, dots, avatar.
+   Prohibido rounded-xl / rounded / rounded-sm en producto. */
+
+/* ---------- Curva marca (Emil: custom, ease-in prohibido) ---------- */
+:root,
+.dark {
+  --cursus-ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Presionable: feedback táctil <160ms, solo transform+opacity. */
+.cursus-pressable {
+  transition:
+    transform 120ms var(--cursus-ease-out),
+    opacity 120ms var(--cursus-ease-out),
+    background-color 120ms var(--cursus-ease-out);
+}
+.cursus-pressable:active {
+  transform: scale(0.97);
+}
+
+/* Paleta Cmd+K: APERTURA INSTANTÁNEA.
+   Decisión Emil #1 (frecuencia manda): cmdk se usa 100+/día con teclado;
+   los 140ms anteriores hacían sentir la UI lenta. Cero animación aquí.
+   Delight reservado a eventos raros (crear workspace, primer issue). */
+.cursus-palette-panel {
+  animation: none;
+}
+
+/* Hovers solo en puntero fino (Emil: sin falsos positivos táctiles). */
+@media (hover: hover) and (pointer: fine) {
+  .cursus-hoverable:hover {
+    /* el color lo pone el componente; aquí solo se permite el gesto */
+  }
+}
+
+/* Skeletons con la forma del layout final (nada de spinners genéricos). */
+.cursus-skeleton {
+  background: var(--cursus-track);
+  border-radius: 6px;
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cursus-skeleton {
+    animation: cursus-skeleton-pulse 1.4s var(--cursus-ease-out) infinite;
+  }
+}
+@keyframes cursus-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursus-palette-panel,
+  .cursus-skeleton,
+  .cursus-pressable {
+    animation: none;
+    transition-duration: 0.01ms;
+  }
+}
+
+/* Listas largas: ayuda al render sin virtualización pesada */
+.cursus-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 56px;
+}
+
+/* ---------- Patrones de marca (solo marketing / auth / empty-states) ----------
+   Grid técnico 24px + ticks lexorank. Pintado una vez por contenedor,
+   nunca por tarjeta: sobrevive a 200 issues sin coste por nodo. */
+.cursus-pattern-grid {
+  background-image:
+    linear-gradient(to right, var(--cursus-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--cursus-border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(
+    ellipse 90% 80% at 50% 20%,
+    black 30%,
+    transparent 75%
+  );
+}
+
+.cursus-pattern-flow {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--cursus-border-strong) 0 8px,
+    transparent 8px 14px
+  );
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.6;
+}
+
+/* Kbd estilo marca */
+.cursus-kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 6px;
+  border: 1px solid var(--cursus-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--cursus-surface-2);
+  color: var(--cursus-text-2);
+  white-space: nowrap;
+}
