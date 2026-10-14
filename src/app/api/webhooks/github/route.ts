@@ -13,8 +13,8 @@ import {
 } from "@/features/github/handler";
 import { verifySignature } from "@/features/github/lib/signature";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+// Sin `runtime`/`dynamic`: incompatibles con `cacheComponents` (next.config.ts).
+// La ruta ya es dinámica porque lee el cuerpo y las cabeceras de `req`.
 
 function str(v: unknown): string {
   return typeof v === "string" ? v : "";
