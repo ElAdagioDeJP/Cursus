@@ -11,7 +11,7 @@
       },
       "cursus": {
         "type": "remote",
-        "url": "https://cursos.delfostrading.com/api/mcp",
+        "url": "https://cursus.empovaro.com/api/mcp",
         "headers": { "Authorization": "Bearer ${CURSUS_MCP_TOKEN}" }
       }
     }

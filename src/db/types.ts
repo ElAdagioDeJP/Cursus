@@ -107,3 +107,38 @@ export interface HistoryRow {
   new_value: string | null;
   created_at: string;
 }
+
+export interface GithubInstallationRow {
+  id: string;
+  workspace_id: string;
+  installation_id: number;
+  account_login: string;
+  account_type: "Organization" | "User";
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GithubRepoRow {
+  id: string;
+  workspace_id: string;
+  installation_id: string;
+  repo_id: number;
+  full_name: string;
+  created_at: string;
+}
+
+export interface IssueGithubLinkRow {
+  id: string;
+  issue_id: string;
+  workspace_id: string;
+  repo_full_name: string;
+  pr_number: number;
+  pr_url: string;
+  pr_title: string;
+  state: "open" | "closed" | "merged";
+  branch: string;
+  commit_sha: string | null;
+  created_at: string;
+  updated_at: string;
+}

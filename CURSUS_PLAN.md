@@ -1,5 +1,5 @@
 # CURSUS — Plan Maestro Web MVP
-### Next.js 16 + MCP + Dokploy | `cursos.delfostrading.com`
+### Next.js 16 + MCP + Dokploy | `cursus.empovaro.com`
 
 > Documento portable. Copiar/pegar en conversación nueva o repo nuevo tal cual.
 > Sin dependencias de otros proyectos. Sin Drizzle. Con sistema propio de migraciones + OAuth.
@@ -11,7 +11,7 @@
 | Campo | Valor |
 |---|---|
 | Nombre | **Cursus** |
-| Dominio prod (por ahora) | `https://cursos.delfostrading.com` |
+| Dominio prod (por ahora) | `https://cursus.empovaro.com` |
 | Tipo | Web MVP estilo Linear (gestión: workspaces, teams, projects, issues) |
 | Stack | `Next.js 16 App Router + Turbopack + React 19 + TS estricto + Postgres 16 + Redis 7 + Auth.js v5 OAuth + postgres.js + zod v4 + nuqs + zustand + Biome + vitest + Playwright` |
 | ORM | **Ninguno. SQL + `postgres.js` + sistema propio de migraciones (ver §4)** |
@@ -422,7 +422,7 @@ AUTH_GITHUB_ID=...
 AUTH_GITHUB_SECRET=...
 AUTH_GOOGLE_ID=...
 AUTH_GOOGLE_SECRET=...
-NEXTAUTH_URL=https://cursos.delfostrading.com (prod) | http://localhost:3000 (dev)
+NEXTAUTH_URL=https://cursus.empovaro.com (prod) | http://localhost:3000 (dev)
 ```
 
 ### 5.5 Flujo UX
@@ -448,7 +448,7 @@ NEXTAUTH_URL=https://cursos.delfostrading.com (prod) | http://localhost:3000 (de
 ### 7.1 Dirección 1: Cursus como MCP server
 
 ```text
-Claude / Opencode ──Streamable HTTP──▶ https://cursos.delfostrading.com/api/mcp ──▶ Postgres
+Claude / Opencode ──Streamable HTTP──▶ https://cursus.empovaro.com/api/mcp ──▶ Postgres
 ```
 
 - Un solo `POST /api/mcp` stateless (`sessionIdGenerator: undefined`, `enableJsonResponse: true`). `runtime: nodejs`. SSE no usar (deprecated).
@@ -498,7 +498,7 @@ Server Action interna → SDK client → MCP externo. `context7` para ayuda docs
       },
       "cursus": {
         "type": "remote",
-        "url": "https://cursos.delfostrading.com/api/mcp",
+        "url": "https://cursus.empovaro.com/api/mcp",
         "headers": { "Authorization": "Bearer ${CURSUS_MCP_TOKEN}" }
       }
     }
@@ -508,11 +508,11 @@ Server Action interna → SDK client → MCP externo. `context7` para ayuda docs
 
 ---
 
-## 8. Deploy Dokploy — `cursos.delfostrading.com`
+## 8. Deploy Dokploy — `cursus.empovaro.com`
 
 ```text
 Traefik (:80/:443 LE)
- ├─ cursos.delfostrading.com → web:3000 (Next standalone)
+ ├─ cursus.empovaro.com → web:3000 (Next standalone)
  ├─ db:5432 interno (no expuesto)
  └─ redis:6379 interno (no expuesto)
 ```
@@ -602,17 +602,25 @@ REDIS_URL=redis://:<pw>@<host-dokploy>:6379
 AUTH_SECRET=<openssl rand -base64 32>
 AUTH_GITHUB_ID=... / AUTH_GITHUB_SECRET=...
 AUTH_GOOGLE_ID=... / AUTH_GOOGLE_SECRET=...
-NEXTAUTH_URL=https://cursos.delfostrading.com
-NEXT_PUBLIC_APP_URL=https://cursos.delfostrading.com
+NEXTAUTH_URL=https://cursus.empovaro.com
+NEXT_PUBLIC_APP_URL=https://cursus.empovaro.com
 CURSUS_MCP_TOKEN=<solo server, nunca NEXT_PUBLIC>
+# OBLIGATORIO en Dokploy: el puerto 3000 del host lo ocupa el propio
+# Dokploy. Si WEB_PORT=3000 (o falta) el deploy falla con
+# "Bind for 0.0.0.0:3000 failed: port is already allocated".
+WEB_PORT=3010
+GITHUB_APP_ID=... / GITHUB_APP_SLUG=...
+GITHUB_APP_PRIVATE_KEY=<una línea con \n literales>
+GITHUB_WEBHOOK_SECRET=<openssl rand -hex 32>
+GITHUB_AUTO_CLOSE_ON_MERGE=true
 ```
 
 ### 8.5 Pasos Dokploy (click-a-click)
 
 1. VPS Ubuntu 24.04, firewall `22,80,443` + SSH key. `curl -sSL https://dokploy.com/install.sh | sh` → admin en `http://<IP>:3000`.
 2. Project `cursus` → Database Postgres `db` (user `app`/db `app`) + Redis `redis`. Guardar passwords.
-3. App `web`: Source GitHub repo/rama `main`, Build `Dockerfile`, Env §8.4, Domains `cursos.delfostrading.com:3000` HTTPS on, Healthcheck `/api/health` → Deploy.
-4. DNS: `A cursos.delfostrading.com → VPS-IP`, TTL 300.
+3. App `web`: Source GitHub repo/rama `main`, Build `Dockerfile`, Env §8.4, Domains `cursus.empovaro.com:3000` HTTPS on, Healthcheck `/api/health` → Deploy.
+4. DNS: `A cursus.empovaro.com → VPS-IP`, TTL 300.
 5. Ver logs: `db:validate OK → migrate OK → listening 3000`.
 6. Backup Postgres daily 02:00 UTC retención 7+4 a S3 + restore trimestral en staging.
 
@@ -621,7 +629,7 @@ VPS: **CX32 (4vCPU/8GB)** recomendado con previews. Mínimo CX22 sin previews.
 ### 8.6 Checklist post-deploy
 
 ```text
-curl -fs https://cursos.delfostrading.com/api/health → 200 ok
+curl -fs https://cursus.empovaro.com/api/health → 200 ok
 curl -fs .../api/health?deep=1 → 200 db+redis
 /sign-in muestra GitHub + Google y loguea
 /board drag mueve issue y persiste tras refresh
@@ -760,7 +768,7 @@ DoD: 2 browsers ven drag <500ms (o degradado a refresh), opencode con CURSUS_MCP
 Carga skills: deployment-engineer, devops-deploy, nextjs-turbopack, security-review.
 Construye: Dockerfile multi-stage (§8.2) + docker-entrypoint.sh (validate+migrate+start) + docker-compose.yml (web/db/redis)
 + .dockerignore + .github/workflows/ci.yml (typecheck+db:validate+test+build+docker) + guía Dokploy §8.5 + .env.example completo OAuth+MCP.
-DoD: docker build OK + compose up + /api/health y ?deep=1 200 + deploy en cursos.delfostrading.com según checklist §8.6.
+DoD: docker build OK + compose up + /api/health y ?deep=1 200 + deploy en cursus.empovaro.com según checklist §8.6.
 ```
 
 ### 10.4 Agenda de ejecución (tiempo estimado 10-14 días)
@@ -771,7 +779,7 @@ DoD: docker build OK + compose up + /api/health y ?deep=1 200 + deploy en cursos
 | 2-4 | S1 (bloquea) + S2/S3 con mocks | migraciones validadas + board/palette en mock |
 | 5-6 | S2+S3 integración | PR B+C unido, E2E verde con DB real |
 | 5-8 | S4 | realtime + MCP 1-8 contra DB real |
-| 8-10 | S5 + hardening OAuth | prod `cursos.delfostrading.com` + checklist |
+| 8-10 | S5 + hardening OAuth | prod `cursus.empovaro.com` + checklist |
 | 10-14 | buffer QA + fixes | Lighthouse + a11y + rate-limit afinado |
 
 ---
@@ -787,7 +795,7 @@ DoD: docker build OK + compose up + /api/health y ?deep=1 200 + deploy en cursos
 [ ] /sign-in con GitHub + Google funciona en staging
 [ ] board drag persiste tras refresh, 2 browsers <500ms o degradado documentado
 [ ] opencode con cursus-local crea/lista/actualiza issues
-[ ] https://cursos.delfostrading.com/api/health y ?deep=1 200
+[ ] https://cursus.empovaro.com/api/health y ?deep=1 200
 [ ] Lighthouse perf/a11y ≥ 90 en board con 200 issues
 ```
 

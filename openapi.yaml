@@ -5,7 +5,7 @@ info:
   description: MVP — health, OAuth (Auth.js), MCP cursus_ (S4).
 servers:
   - url: http://localhost:3000
-  - url: https://cursos.delfostrading.com
+  - url: https://cursus.empovaro.com
 paths:
   /api/health:
     get:
@@ -42,6 +42,19 @@ paths:
         "400": { description: JSON o petición inválida }
         "401": { description: sin autorización }
         "429": { description: límite excedido }
+  /api/webhooks/github:
+    post:
+      summary: Webhook de la GitHub App estilo Linear (issues ↔ PRs)
+      description: |
+        Recibe eventos pull_request, push e installation de GitHub. Verifica
+        HMAC sha256 con GITHUB_WEBHOOK_SECRET (x-hub-signature-256).
+        Extrae identificadores TEAMKEY-number (ej CUR-123) de rama, título,
+        cuerpo y commits; vincula el PR al issue; pasa a review al abrir y a
+        done al hacer merge. Ver docs/github-app.md.
+      responses:
+        "200": { description: evento procesado (o ignorado sin vínculos) }
+        "401": { description: firma inválida }
+        "503": { description: webhook no configurado }
 components:
   schemas:
     Issue:

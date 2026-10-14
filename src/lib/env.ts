@@ -23,6 +23,13 @@ const envSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   CURSUS_MCP_TOKEN: z.string().optional().default(""),
   POSTGRES_PASSWORD: z.string().optional().default("changeme"),
+  // GitHub App estilo Linear (integración issues ↔ PRs). Todo opcional en
+  // dev; en prod se exige GITHUB_WEBHOOK_SECRET si el webhook está activo.
+  GITHUB_APP_ID: z.string().optional().default(""),
+  GITHUB_APP_SLUG: z.string().optional().default(""),
+  GITHUB_APP_PRIVATE_KEY: z.string().optional().default(""),
+  GITHUB_WEBHOOK_SECRET: z.string().optional().default(""),
+  GITHUB_AUTO_CLOSE_ON_MERGE: z.string().optional().default("true"),
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
