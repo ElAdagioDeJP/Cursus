@@ -1,6 +1,11 @@
 import Image from "next/image";
 import { signIn } from "@/auth/config";
 
+// Solo se muestra el botón del provider con credenciales en el entorno.
+// Evita mandar al usuario a un `Error 401: invalid_client` garantizado.
+const githubEnabled = Boolean(process.env.AUTH_GITHUB_ID);
+const googleEnabled = Boolean(process.env.AUTH_GOOGLE_ID);
+
 export default function SignInPage() {
   return (
     <main className="cursus-pattern-grid bg-cursus-bg">
@@ -21,32 +26,45 @@ export default function SignInPage() {
                 Accede con tu cuenta. Sin contraseñas en MVP.
               </p>
             </div>
-            <form
-              action={async () => {
-                "use server";
-                await signIn("github", { redirectTo: "/" });
-              }}
-            >
-              <button
-                type="submit"
-                className="cursus-pressable w-full rounded-md bg-cursus-primary px-4 py-2.5 text-sm font-medium text-cursus-on-primary hover:bg-cursus-primary-hover"
+            {githubEnabled && (
+              <form
+                action={async () => {
+                  "use server";
+                  await signIn("github", { redirectTo: "/" });
+                }}
               >
-                Continuar con GitHub
-              </button>
-            </form>
-            <form
-              action={async () => {
-                "use server";
-                await signIn("google", { redirectTo: "/" });
-              }}
-            >
-              <button
-                type="submit"
-                className="cursus-pressable w-full rounded-md border border-cursus-border px-4 py-2.5 text-sm font-medium text-cursus-text-1 hover:bg-cursus-surface-2"
+                <button
+                  type="submit"
+                  className="cursus-pressable w-full rounded-md bg-cursus-primary px-4 py-2.5 text-sm font-medium text-cursus-on-primary hover:bg-cursus-primary-hover"
+                >
+                  Continuar con GitHub
+                </button>
+              </form>
+            )}
+            {googleEnabled && (
+              <form
+                action={async () => {
+                  "use server";
+                  await signIn("google", { redirectTo: "/" });
+                }}
               >
-                Continuar con Google
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  className="cursus-pressable w-full rounded-md border border-cursus-border px-4 py-2.5 text-sm font-medium text-cursus-text-1 hover:bg-cursus-surface-2"
+                >
+                  Continuar con Google
+                </button>
+              </form>
+            )}
+            {!githubEnabled && !googleEnabled && (
+              <p
+                role="alert"
+                className="rounded-md border border-cursus-border bg-cursus-surface-2 px-4 py-3 text-sm text-cursus-text-2"
+              >
+                Inicio de sesión no configurado: falta `AUTH_GITHUB_ID` o
+                `AUTH_GOOGLE_ID` en el entorno del servidor.
+              </p>
+            )}
           </div>
         </div>
         <p className="mt-4 text-center text-xs text-cursus-text-3">
