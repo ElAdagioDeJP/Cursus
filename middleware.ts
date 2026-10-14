@@ -6,21 +6,11 @@
 
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-
-const PUBLIC_PREFIXES = [
-  "/_next",
-  "/favicon",
-  "/sign-in",
-  "/api/auth",
-  "/api/health",
-  "/api/mcp",
-];
+import { isPublicPath } from "@/lib/public-paths";
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathname === "/") return NextResponse.next();
-  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p)))
-    return NextResponse.next();
+  if (isPublicPath(pathname)) return NextResponse.next();
   const hasSession =
     req.cookies.has("authjs.session-token") ||
     req.cookies.has("__Secure-authjs.session-token");
