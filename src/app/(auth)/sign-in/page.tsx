@@ -37,7 +37,7 @@ export default async function SignInPage() {
               <form
                 action={async () => {
                   "use server";
-                  await signIn("github", { redirectTo: "/" });
+                  await signIn("github", { redirectTo: "/home" });
                 }}
               >
                 <button
@@ -52,7 +52,7 @@ export default async function SignInPage() {
               <form
                 action={async () => {
                   "use server";
-                  await signIn("google", { redirectTo: "/" });
+                  await signIn("google", { redirectTo: "/home" });
                 }}
               >
                 <button
