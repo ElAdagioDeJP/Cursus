@@ -1,12 +1,10 @@
-/** List-server (RSC): ordena por estado y sort_key para lectura densa. */
+/** List-server (RSC): filtra por URL (?status=&q=) y agrupa por estado. */
 import { cacheTag } from "next/cache";
 import { requireMembership } from "@/auth/guards";
 import { listIssues } from "../queries";
 import type { WorkflowStatus } from "../schema";
-import type { IssueFilterState } from "./filters";
+import { groupIssuesByStatus, type IssueFilterState } from "./filters";
 import { ListClient } from "./List-client";
-
-const ORDER = ["backlog", "todo", "in_progress", "review", "done", "canceled"];
 
 async function getListIssues(args: {
   userId: string;
@@ -54,10 +52,11 @@ export async function ListServer({
     projectId: filters.project || undefined,
     q: filters.q || undefined,
   });
-  const ordered = [...issues].sort(
-    (a, b) =>
-      ORDER.indexOf(a.status) - ORDER.indexOf(b.status) ||
-      (a.sort_key < b.sort_key ? -1 : 1),
+  return (
+    <ListClient
+      wsSlug={wsSlug}
+      teamId={teamId}
+      groups={groupIssuesByStatus(issues)}
+    />
   );
-  return <ListClient wsSlug={wsSlug} teamId={teamId} issues={ordered} />;
 }

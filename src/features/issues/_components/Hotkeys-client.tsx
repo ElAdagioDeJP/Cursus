@@ -57,13 +57,15 @@ export function Hotkeys() {
     {
       combo: "c",
       handler: () => {
-        const el = document.getElementById(
+        const title = document.getElementById(
           "cursus-new-issue-title",
         ) as HTMLInputElement | null;
-        if (el) {
-          el.focus();
-          el.scrollIntoView({ block: "center" });
+        if (title) {
+          title.focus();
+          title.scrollIntoView({ block: "center" });
+          return;
         }
+        document.getElementById("cursus-new-issue-open")?.click();
       },
     },
     { combo: "?", handler: () => setHelpOpen((v) => !v) },

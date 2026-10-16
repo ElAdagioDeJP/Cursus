@@ -76,19 +76,25 @@
   --cursus-track: #e4e1d8; /* riel de scroll / skeleton */
 }
 
-/* ---------- Tema oscuro (por defecto en producto) ---------- */
+/* ---------- Tema oscuro (por defecto en producto) ----------
+   Linear-grade: fondo #08090c, superficie #101014, borde blanco/8,
+   texto 3 niveles (#f7f8fa / #a1a1aa / #71717a). Naranja Señal solo
+   como acento único (CTA principal, foco, estados activos). */
 .dark {
   color-scheme: dark;
 
-  --cursus-bg: #0c0d0f;
-  --cursus-surface: #141619;
-  --cursus-surface-2: #1c1f24;
-  --cursus-border: #262b33;
-  --cursus-border-strong: #363d48;
-  --cursus-text-1: #f2f3f0;
-  --cursus-text-2: #c2c6c9;
-  --cursus-text-3: #8b9199;
-  --cursus-text-4: #5a616b;
+  --cursus-bg: #08090c;
+  --cursus-surface: #101014;
+  --cursus-surface-2: #17171d;
+  --cursus-sidebar: #0a0a0c;
+  --cursus-hover: rgb(255 255 255 / 0.04);
+  --cursus-active: rgb(255 255 255 / 0.07);
+  --cursus-border: rgb(255 255 255 / 0.08);
+  --cursus-border-strong: rgb(255 255 255 / 0.14);
+  --cursus-text-1: #f7f8fa;
+  --cursus-text-2: #a1a1aa;
+  --cursus-text-3: #71717a;
+  --cursus-text-4: #52525b;
 
   --cursus-primary: #ff6b2c;
   --cursus-primary-hover: #ff8452;
@@ -132,7 +138,7 @@
   --cursus-label-sand: #d6cdbf;
 
   --cursus-focus: var(--cursus-primary);
-  --cursus-track: #262b33;
+  --cursus-track: rgb(255 255 255 / 0.08);
 }
 
 /* ---------- Bridge a Tailwind v4 ---------- */
@@ -140,6 +146,9 @@
   --color-cursus-bg: var(--cursus-bg);
   --color-cursus-surface: var(--cursus-surface);
   --color-cursus-surface-2: var(--cursus-surface-2);
+  --color-cursus-sidebar: var(--cursus-sidebar);
+  --color-cursus-hover: var(--cursus-hover);
+  --color-cursus-active: var(--cursus-active);
   --color-cursus-border: var(--cursus-border);
   --color-cursus-border-strong: var(--cursus-border-strong);
   --color-cursus-text-1: var(--cursus-text-1);
@@ -329,6 +338,112 @@ select option {
   background-repeat: no-repeat;
   background-position: center;
   opacity: 0.6;
+}
+
+/* ---------- Linear-grade: primitivas compartidas ----------
+   Los frentes las usan vía src/ui/*. Sin lógica de negocio aquí. */
+
+/* Selección de texto con acento único (20% Señal). */
+::selection {
+  background: color-mix(in srgb, var(--cursus-primary) 28%, transparent);
+  color: var(--cursus-text-1);
+}
+
+/* Scrollbar fina y silenciosa (solo dark; en light la nativa). */
+.dark * {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.14) transparent;
+}
+.dark *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.dark *::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.12);
+  border-radius: 999px;
+}
+.dark *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Overlay de modal: negro 60% + blur leve. */
+.cursus-overlay {
+  background: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* Panel de modal: entrada 140ms (fade + scale 0.98 → 1). */
+@media (prefers-reduced-motion: no-preference) {
+  .cursus-modal-panel {
+    animation: cursus-modal-in 140ms var(--cursus-ease-out);
+  }
+  .cursus-overlay {
+    animation: cursus-fade-in 140ms var(--cursus-ease-out);
+  }
+}
+@keyframes cursus-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes cursus-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Input / select / textarea Linear: 32px, fondo transparente,
+   borde white/8, foco con borde-strong + anillo Señal. */
+.cursus-input {
+  height: 2rem;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--cursus-border);
+  background: transparent;
+  padding: 0 0.625rem;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cursus-text-1);
+}
+.cursus-input::placeholder {
+  color: var(--cursus-text-3);
+}
+.cursus-input:focus {
+  outline: none;
+  border-color: var(--cursus-border-strong);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--cursus-primary) 35%, transparent);
+}
+
+/* Etiqueta de sección de sidebar: 11px, mayúsculas, tracking, gris-3. */
+.cursus-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cursus-text-3);
+}
+
+/* Identificador de issue (CUR-123): mono 12px gris-3, ancho fijo. */
+.cursus-identifier {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cursus-text-3);
+  white-space: nowrap;
+}
+
+/* Divisor hairline white/8. */
+.cursus-divider {
+  border-color: var(--cursus-border);
 }
 
 /* Kbd estilo marca */

@@ -5,10 +5,11 @@ import { requireMembership } from "@/auth/guards";
 import { BoardServer } from "@/features/issues/_components/Board-server";
 import { FiltersBar } from "@/features/issues/_components/FiltersBar-client";
 import { loadIssueFilters } from "@/features/issues/_components/filters";
-import { NewIssueForm } from "@/features/issues/_components/NewIssueForm-client";
+import { NewIssueModal } from "@/features/issues/_components/NewIssueModal-client";
 import { listLabels } from "@/features/issues/queries";
 import { listProjects } from "@/features/projects/queries";
 import { getTeam } from "@/features/teams/queries";
+import { listMembers } from "@/features/workspaces/queries";
 import { teamList } from "@/lib/routes";
 import { RealtimeRefresh } from "@/realtime/client";
 import { BoardSkeleton } from "@/ui/Skeleton";
@@ -26,9 +27,10 @@ export default async function BoardPage({
   if (!team) notFound();
   const filters = await loadIssueFilters(await searchParams);
   const ctx = { userId: m.userId, workspaceId: m.workspaceId };
-  const [projects, labels] = await Promise.all([
+  const [projects, labels, members] = await Promise.all([
     listProjects(m.workspaceId),
     listLabels(ctx),
+    listMembers(m.workspaceId),
   ]);
 
   return (
@@ -56,11 +58,12 @@ export default async function BoardPage({
           </Link>
         </nav>
         <span className="ml-auto">
-          <NewIssueForm
+          <NewIssueModal
             wsSlug={wsSlug}
             teamId={teamId}
             projects={projects}
             labels={labels}
+            members={members}
           />
         </span>
       </header>

@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireMembership } from "@/auth/guards";
 import { createProjectAction } from "@/features/projects/actions";
-import { listProjects } from "@/features/projects/queries";
+import { listProjectIssues, listProjects } from "@/features/projects/queries";
 import { getTeam } from "@/features/teams/queries";
+import { teamProject } from "@/lib/routes";
 import { Button } from "@/ui/Button";
 import { EmptyState } from "@/ui/EmptyState";
 
@@ -16,13 +18,21 @@ export default async function TeamProjectsPage({
   const team = await getTeam(m.workspaceId, teamId);
   if (!team) notFound();
   const projects = await listProjects(m.workspaceId);
+  const counts = await Promise.all(
+    projects.map(async (p) => ({
+      id: p.id,
+      count: (await listProjectIssues(m.workspaceId, p.id, 50)).length,
+    })),
+  );
+  const countById = new Map(counts.map((c) => [c.id, c.count]));
 
   const inputCls =
     "rounded-md border border-cursus-border bg-cursus-surface px-3 py-2 text-sm text-cursus-text-1 placeholder:text-cursus-text-3";
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6">
+    <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <h1 className="font-display text-xl font-semibold text-cursus-text-1">
+        <span className="font-mono text-cursus-text-2">{team.key}</span>{" "}
         Proyectos
       </h1>
       {projects.length === 0 ? (
@@ -31,21 +41,31 @@ export default async function TeamProjectsPage({
           hint="Crea el primer proyecto para agrupar incidencias de varios equipos."
         />
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="grid gap-3 sm:grid-cols-2">
           {projects.map((p) => (
             <li
               key={p.id}
-              className="rounded-lg border border-cursus-border bg-cursus-surface p-3"
+              className="flex flex-col gap-1 rounded-lg border border-cursus-border bg-cursus-surface p-4"
             >
-              <p className="font-medium text-cursus-text-1">
-                <span className="font-mono text-cursus-text-2">{p.key}</span>{" "}
-                {p.name}
+              <p className="font-mono text-xs uppercase tracking-wide text-cursus-text-3">
+                {p.key} · {countById.get(p.id) ?? 0} incidencias
               </p>
+              <Link
+                href={teamProject(wsSlug, teamId, p.id)}
+                className="font-display font-medium text-cursus-text-1 hover:underline"
+              >
+                {p.name}
+              </Link>
               {p.description ? (
-                <p className="mt-0.5 text-sm text-cursus-text-3">
+                <p className="line-clamp-2 text-sm text-cursus-text-3">
                   {p.description}
                 </p>
               ) : null}
+              <p className="mt-1 font-mono text-xs text-cursus-text-3">
+                {p.team_keys.length > 0
+                  ? `Equipos: ${p.team_keys.join(", ")}`
+                  : "Sin equipos vinculados"}
+              </p>
             </li>
           ))}
         </ul>

@@ -36,7 +36,9 @@ export default function RootLayout({
       lang="es"
       className={`dark ${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}
     >
-      <body>{children}</body>
+      <body className="bg-cursus-bg text-cursus-text-1 antialiased">
+        {children}
+      </body>
     </html>
   );
 }

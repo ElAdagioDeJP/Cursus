@@ -1,7 +1,8 @@
 import { cn } from "@/lib/cn";
 
 /* Punto de columna en token flow-* + texto en text-2 (AA garantizado).
-   Cero violeta: review usa Petróleo (flow-review). */
+   Cero violeta: review usa Petróleo (flow-review). Pill sutil con
+   borde white/8; para pills genéricas ver ui/Pill.tsx. */
 
 const DOT: Record<string, string> = {
   backlog: "bg-flow-backlog",
@@ -25,7 +26,7 @@ export function StatusBadge({ status }: { status: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full bg-cursus-surface-2 px-2 py-0.5 font-mono text-xs font-medium text-cursus-text-2",
+        "inline-flex items-center gap-1.5 rounded-full border border-cursus-border bg-white/[0.02] px-2 py-px font-mono text-xs font-medium text-cursus-text-2",
       )}
     >
       <span
