@@ -10,7 +10,18 @@ services:
       DATABASE_URL: postgresql://app:${POSTGRES_PASSWORD}@db:5432/app
       REDIS_URL: redis://redis:6379
       AUTH_SECRET: ${AUTH_SECRET}
-      NEXTAUTH_URL: http://localhost:3000
+      AUTH_GITHUB_ID: ${AUTH_GITHUB_ID:-}
+      AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET:-}
+      AUTH_GOOGLE_ID: ${AUTH_GOOGLE_ID:-}
+      AUTH_GOOGLE_SECRET: ${AUTH_GOOGLE_SECRET:-}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-https://cursus.empovaro.com}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://cursus.empovaro.com}
+      CURSUS_MCP_TOKEN: ${CURSUS_MCP_TOKEN:-}
+      GITHUB_APP_ID: ${GITHUB_APP_ID:-}
+      GITHUB_APP_SLUG: ${GITHUB_APP_SLUG:-}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
+      GITHUB_AUTO_CLOSE_ON_MERGE: ${GITHUB_AUTO_CLOSE_ON_MERGE:-true}
     depends_on:
       db:
         condition: service_healthy
