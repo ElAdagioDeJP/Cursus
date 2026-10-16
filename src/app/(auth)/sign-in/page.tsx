@@ -1,12 +1,17 @@
 import Image from "next/image";
 import { signIn } from "@/auth/config";
 
-// Solo se muestra el botón del provider con credenciales en el entorno.
-// Evita mandar al usuario a un `Error 401: invalid_client` garantizado.
-const githubEnabled = Boolean(process.env.AUTH_GITHUB_ID);
-const googleEnabled = Boolean(process.env.AUTH_GOOGLE_ID);
+// El build de Docker corre sin AUTH_* (env solo existe en runtime en Dokploy).
+// Sin esto Next prerenderiza /sign-in en build con IDs vacíos y el HTML
+// queda congelado en "no configurado" aunque el contenedor sí tenga env.
+export const dynamic = "force-dynamic";
 
 export default function SignInPage() {
+  // Solo se muestra el botón del provider con credenciales en el entorno.
+  // Evita mandar al usuario a un `Error 401: invalid_client` garantizado.
+  // Se lee aquí (runtime) y no a nivel módulo (build) a propósito.
+  const githubEnabled = Boolean(process.env.AUTH_GITHUB_ID);
+  const googleEnabled = Boolean(process.env.AUTH_GOOGLE_ID);
   return (
     <main className="cursus-pattern-grid bg-cursus-bg">
       <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
