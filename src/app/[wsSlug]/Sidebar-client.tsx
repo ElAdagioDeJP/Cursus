@@ -6,7 +6,6 @@ import {
   ChevronDown,
   ChevronRight,
   CircleDot,
-  Ellipsis,
   Eye,
   House,
   Inbox,
@@ -14,7 +13,6 @@ import {
   PanelLeftClose,
   RefreshCw,
   Settings,
-  Target,
   Users,
 } from "lucide-react";
 import type { Route } from "next";
@@ -32,12 +30,8 @@ import {
   teamTriage,
   teamViews,
   wsHome,
-  wsInitiatives,
-  wsLoops,
   wsMembers,
-  wsProjects,
   wsSettings,
-  wsViews,
 } from "@/lib/routes";
 import { useUiStore } from "@/lib/ui-store";
 
@@ -150,17 +144,6 @@ export function Sidebar({
           <PanelLeftClose {...ICON} aria-hidden="true" />
         </button>
       </div>
-
-      <nav className="flex flex-col gap-0.5" aria-label="Workspace">
-        <p className="px-2.5 pb-1 font-mono text-[11px] uppercase tracking-wide text-cursus-text-3">
-          Workspace
-        </p>
-        {link(wsInitiatives(wsSlug), "Initiatives", <Target {...ICON} />)}
-        {link(wsProjects(wsSlug), "Projects", <Briefcase {...ICON} />)}
-        {link(wsViews(wsSlug), "Views", <Eye {...ICON} />)}
-        {link(wsLoops(wsSlug), "Loops", <RefreshCw {...ICON} />)}
-        {link(wsHome(wsSlug), "More", <Ellipsis {...ICON} />)}
-      </nav>
 
       <div>
         <p className="px-2.5 pb-1 font-mono text-[11px] uppercase tracking-wide text-cursus-text-3">

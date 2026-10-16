@@ -14,7 +14,7 @@ if (!slug || !name) {
   );
   process.exit(1);
 }
-const valid = scopes.length > 0 ? scopes : ["read"];
+const valid = scopes.length > 0 ? scopes : [...ALL_SCOPES];
 for (const s of valid) {
   if (!(ALL_SCOPES as string[]).includes(s)) {
     console.error(`Scope inválido: ${s}. Válidos: ${ALL_SCOPES.join(", ")}`);
