@@ -218,6 +218,19 @@ const PROMPTS = [
       },
     ],
   },
+  {
+    name: "roadmap-planning",
+    description:
+      "Convierte un brief en proyecto + issues por fase con relaciones related. Muestra el plan antes de crear.",
+    arguments: [
+      {
+        name: "brief",
+        description: "Documento o brief del roadmap",
+        required: true,
+      },
+      { name: "teamKey", description: "Clave del equipo", required: true },
+    ],
+  },
 ];
 
 export function listPrompts() {
@@ -234,6 +247,7 @@ export function getPrompt(
     triage: `Eres el triage de Cursus. Equipo ${args.teamKey ?? "?"}. Lista el backlog con cursus_list_issues, y para cada issue propón estado, prioridad (0-4) y asignado. Aplica cambios solo con cursus_update_status/cursus_assign_issue.`,
     "plan-sprint": `Eres el planificador de Cursus. Equipo ${args.teamKey ?? "?"}. Toma las abiertas ordenadas por prioridad y estimación, y propón un plan que quepa en una semana. No cambies nada sin confirmación.`,
     "spec-to-issues": `Eres el despiece de Cursus. Convierte esta especificación en incidencias (título 3-200, prioridad, estimación XS-XXXL): ${args.spec ?? ""}. Crea con cursus_create_issue solo tras revisar la lista.`,
+    "roadmap-planning": `Eres el planificador de roadmap de Cursus. Equipo ${args.teamKey ?? "?"}. Lee este brief: ${args.brief ?? ""}. Propón UN proyecto (cursus_create_project) y sus issues por fase (cursus_create_issue con título 3-200, prioridad y estimación XS-XXXL; sin milestones reales, cada fase es un grupo de issues con prefijo [Fase N]). Muestra el plan completo ANTES de crear nada y espera confirmación. No inventes dependencias: solo marca como related lo que el brief declare explícito; nunca uses blocked/blocking/duplicate.`,
   };
   return {
     messages: [{ role: "user", content: { type: "text", text: text[name] } }],

@@ -4,7 +4,7 @@
  * No existe columna de reviewer: Reviews usa assignee como proxy sobre
  * la cola de `review` del workspace.
  */
-import { getSql } from "@/db/client";
+import { first, getSql } from "@/db/client";
 import type { IssueListRow } from "@/db/types";
 import type { QueryContext } from "@/features/issues/queries";
 
@@ -31,6 +31,21 @@ export async function listInboxIssues(
     order by i.updated_at desc, i.id desc
     limit ${limit}`;
   return rows as unknown as IssueListRow[];
+}
+
+/** Conteo Inbox: mismo filtro que listInboxIssues (badge del Sidebar). */
+export async function countInboxIssues(
+  ctx: QueryContext,
+  userId: string,
+): Promise<number> {
+  const sql = getSql();
+  const rows = await sql`select count(*)::int as count
+    from issues i
+    join teams t on t.id = i.team_id
+    where t.workspace_id = ${ctx.workspaceId}
+      and i.assignee_id = ${userId}
+      and i.status not in ('done', 'canceled')`;
+  return first(rows as unknown as Array<{ count: number }>)?.count ?? 0;
 }
 
 /** My issues: todo lo asignado a mí (salvo canceled), por updated_at desc. */
@@ -74,6 +89,20 @@ export async function listReviewIssues(
       i.updated_at desc, i.id desc
     limit ${limit}`;
   return rows as unknown as IssueListRow[];
+}
+
+/** Conteo Reviews: misma cola que listReviewIssues (badge del Sidebar). */
+export async function countReviewIssues(
+  ctx: QueryContext,
+  _userId: string,
+): Promise<number> {
+  const sql = getSql();
+  const rows = await sql`select count(*)::int as count
+    from issues i
+    join teams t on t.id = i.team_id
+    where t.workspace_id = ${ctx.workspaceId}
+      and i.status = 'review'`;
+  return first(rows as unknown as Array<{ count: number }>)?.count ?? 0;
 }
 
 export interface PulseItem {

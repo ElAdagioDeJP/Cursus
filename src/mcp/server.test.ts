@@ -10,13 +10,13 @@ import {
 } from "./server";
 
 describe("registro MCP", () => {
-  it("expone 15 tools con prefijo cursus_", () => {
-    expect(TOOLS).toHaveLength(15);
+  it("expone 16 tools con prefijo cursus_", () => {
+    expect(TOOLS).toHaveLength(16);
     for (const t of TOOLS) expect(t.name.startsWith("cursus_")).toBe(true);
   });
   it("tools/list con inputSchema JSON válido", () => {
     const list = toolInputSchemas();
-    expect(list).toHaveLength(15);
+    expect(list).toHaveLength(16);
     for (const t of list) {
       expect(t.inputSchema).toMatchObject({ type: "object" });
     }
@@ -32,6 +32,7 @@ describe("registro MCP", () => {
       "triage",
       "plan-sprint",
       "spec-to-issues",
+      "roadmap-planning",
     ]);
     expect(getPrompt("triage", { teamKey: "CUR" }).messages).toHaveLength(1);
   });

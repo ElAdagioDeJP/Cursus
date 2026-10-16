@@ -44,6 +44,61 @@ export async function createProject(
   });
 }
 
+export interface UpdateProjectInput {
+  name?: string;
+  key?: string;
+  description?: string;
+}
+
+export async function updateProject(
+  workspaceId: string,
+  projectId: string,
+  input: UpdateProjectInput,
+) {
+  const sql = getSql();
+  const existing = first(
+    (await sql`select * from projects where id = ${projectId} and workspace_id = ${workspaceId}`) as unknown as ProjectRow[],
+  );
+  if (!existing) throw new Error("Proyecto no encontrado en este workspace.");
+  const patch: { name?: string; key?: string; description?: string } = {};
+  if (input.name !== undefined) {
+    const name = input.name.trim();
+    if (name.length < 2 || name.length > 80)
+      throw new Error("El nombre debe tener entre 2 y 80 caracteres.");
+    patch.name = name;
+  }
+  if (input.key !== undefined) {
+    if (!/^[A-Z]{2,6}$/.test(input.key))
+      throw new Error("La clave debe cumplir [A-Z]{2,6}.");
+    const clashes =
+      await sql`select id from projects where workspace_id = ${workspaceId} and key = ${input.key} and id <> ${projectId} limit 1`;
+    if (clashes.length > 0)
+      throw new Error(
+        `Ya existe otro proyecto con la clave ${input.key} en este workspace.`,
+      );
+    patch.key = input.key;
+  }
+  if (input.description !== undefined) {
+    if (input.description.length > 5000)
+      throw new Error("La descripción supera los 5000 caracteres.");
+    patch.description = input.description;
+  }
+  if (
+    patch.name === undefined &&
+    patch.key === undefined &&
+    patch.description === undefined
+  ) {
+    throw new Error("Indica al menos uno de: name, key, description.");
+  }
+  const rows =
+    (await sql`update projects set name = coalesce(${patch.name ?? null}, name),
+      key = coalesce(${patch.key ?? null}, key),
+      description = coalesce(${patch.description ?? null}, description),
+      updated_at = now()
+      where id = ${projectId} and workspace_id = ${workspaceId} returning *`) as unknown as ProjectRow[];
+  return one(rows, "Proyecto");
+}
+
 export async function listProjectIssues(
   workspaceId: string,
   projectId: string,

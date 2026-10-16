@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
 import { requireMembership } from "@/auth/guards";
+import {
+  countInboxIssues,
+  countReviewIssues,
+} from "@/features/notifications/queries";
 import { listTeams } from "@/features/teams/queries";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
 import { Skeleton } from "@/ui/Skeleton";
@@ -20,9 +24,20 @@ async function WorkspaceChrome({
   const ws = await getWorkspaceBySlug(wsSlug);
   if (!ws) notFound();
   const teams = await listTeams(m.workspaceId);
+  const ctx = { userId: m.userId, workspaceId: m.workspaceId };
+  // Conteos reales para los badges; si fallan, Sidebar oculta el badge.
+  const [inbox, reviews] = await Promise.all([
+    countInboxIssues(ctx, m.userId).catch(() => 0),
+    countReviewIssues(ctx, m.userId).catch(() => 0),
+  ]);
   return (
     <div className="flex min-h-screen bg-cursus-bg">
-      <Sidebar wsSlug={wsSlug} workspaceName={ws.name} teams={teams} />
+      <Sidebar
+        wsSlug={wsSlug}
+        workspaceName={ws.name}
+        teams={teams}
+        counts={{ inbox, reviews }}
+      />
       <main className="min-w-0 flex-1 px-4 py-6 md:px-8">{children}</main>
     </div>
   );

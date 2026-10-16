@@ -7,13 +7,18 @@ import {
   ChevronRight,
   CircleDot,
   Eye,
+  GitPullRequest,
   House,
   Inbox,
   PanelLeft,
   PanelLeftClose,
+  Radio,
   RefreshCw,
+  Search,
   Settings,
+  SquarePen,
   Users,
+  Zap,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
@@ -29,8 +34,13 @@ import {
   teamProjects,
   teamTriage,
   teamViews,
+  wsAgent,
   wsHome,
+  wsInbox,
   wsMembers,
+  wsMyIssues,
+  wsPulse,
+  wsReviews,
   wsSettings,
 } from "@/lib/routes";
 import { useUiStore } from "@/lib/ui-store";
@@ -43,14 +53,17 @@ export function Sidebar({
   wsSlug,
   workspaceName,
   teams,
+  counts,
 }: {
   wsSlug: string;
   workspaceName: string;
   teams: Array<Team>;
+  counts: { inbox: number; reviews: number };
 }) {
   const pathname = usePathname();
   const open = useUiStore((s) => s.sidebarOpen);
   const toggle = useUiStore((s) => s.toggleSidebar);
+  const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
 
   const activeTeamId =
     teams.find((t) => pathname.startsWith(`/${wsSlug}/teams/${t.id}`))?.id ??
@@ -61,6 +74,7 @@ export function Sidebar({
   const isExpanded = (id: string) => expanded[id] ?? id === activeTeamId;
   const toggleTeam = (id: string) =>
     setExpanded((s) => ({ ...s, [id]: !(s[id] ?? id === activeTeamId) }));
+  const firstTeam = teams[0] ?? null;
 
   if (!open) {
     return (
@@ -98,6 +112,33 @@ export function Sidebar({
     );
   };
 
+  const topLink = (
+    href: Route,
+    label: string,
+    icon: React.ReactNode,
+    count?: number,
+  ) => {
+    const active = pathname === href;
+    return (
+      <Link
+        key={href + label}
+        href={href}
+        aria-current={active ? "page" : undefined}
+        className={itemCls(active)}
+      >
+        <span aria-hidden="true" className="shrink-0">
+          {icon}
+        </span>
+        {label}
+        {count !== undefined && count > 0 ? (
+          <span className="ml-auto rounded-full bg-cursus-surface-2 px-1.5 font-mono text-[11px] text-cursus-text-2">
+            {count}
+          </span>
+        ) : null}
+      </Link>
+    );
+  };
+
   const teamLinks = (t: Team) => [
     { href: teamHome(wsSlug, t.id), label: "Home", icon: <House {...ICON} /> },
     {
@@ -128,12 +169,29 @@ export function Sidebar({
       className="flex w-60 shrink-0 flex-col gap-4 overflow-y-auto border-r border-cursus-border bg-cursus-surface p-3"
       aria-label="Navegación del workspace"
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center gap-1">
         <Link
           href={wsHome(wsSlug)}
-          className="truncate font-display text-[15px] font-semibold text-cursus-text-1"
+          className="min-w-0 flex-1 truncate font-display text-[15px] font-semibold text-cursus-text-1"
         >
           {workspaceName}
+        </Link>
+        <button
+          type="button"
+          onClick={() => setPaletteOpen(true)}
+          aria-label="Buscar (Cmd+K)"
+          title="Buscar (Cmd+K)"
+          className="cursus-pressable rounded-md p-1.5 text-cursus-text-3 hover:bg-cursus-surface-2 hover:text-cursus-text-1"
+        >
+          <Search {...ICON} aria-hidden="true" />
+        </button>
+        <Link
+          href={firstTeam ? teamIssues(wsSlug, firstTeam.id) : wsHome(wsSlug)}
+          aria-label="Nueva incidencia"
+          title="Nueva incidencia"
+          className="cursus-pressable rounded-md p-1.5 text-cursus-text-3 hover:bg-cursus-surface-2 hover:text-cursus-text-1"
+        >
+          <SquarePen {...ICON} aria-hidden="true" />
         </Link>
         <button
           type="button"
@@ -144,6 +202,19 @@ export function Sidebar({
           <PanelLeftClose {...ICON} aria-hidden="true" />
         </button>
       </div>
+
+      <nav className="flex flex-col gap-0.5" aria-label="Principal">
+        {topLink(wsInbox(wsSlug), "Inbox", <Inbox {...ICON} />, counts.inbox)}
+        {topLink(
+          wsReviews(wsSlug),
+          "Reviews",
+          <GitPullRequest {...ICON} />,
+          counts.reviews,
+        )}
+        {topLink(wsMyIssues(wsSlug), "My issues", <CircleDot {...ICON} />)}
+        {topLink(wsPulse(wsSlug), "Pulse", <Radio {...ICON} />)}
+        {topLink(wsAgent(wsSlug), "Agent", <Zap {...ICON} />)}
+      </nav>
 
       <div>
         <p className="px-2.5 pb-1 font-mono text-[11px] uppercase tracking-wide text-cursus-text-3">

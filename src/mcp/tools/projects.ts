@@ -1,7 +1,11 @@
 /** Tools MCP de proyectos, etiquetas y equipos (4/15). */
 import { z } from "zod";
 import { createLabel } from "@/features/issues/queries";
-import { createProject, listProjects } from "@/features/projects/queries";
+import {
+  createProject,
+  listProjects,
+  updateProject,
+} from "@/features/projects/queries";
 import { listTeams } from "@/features/teams/queries";
 import type { ToolDef } from "./issues";
 
@@ -36,6 +40,46 @@ export const projectTools: ToolDef[] = [
         key: project.key,
         url: `${ctx.appUrl}/${ctx.workspaceSlug}/teams/${input.teamIds[0] ?? ""}/projects/${project.id}`,
       };
+    },
+  },
+  {
+    name: "cursus_update_project",
+    description:
+      "Actualiza nombre, clave o descripción de un proyecto. Devuelve id, key y name.",
+    scope: "issues:write",
+    kind: "write",
+    input: z
+      .object({
+        id: z.uuid().describe("UUID del proyecto"),
+        name: z.string().trim().min(2).max(80).nullish(),
+        key: z
+          .string()
+          .regex(/^[A-Z]{2,6}$/)
+          .describe("Clave [A-Z]{2,6}")
+          .nullish(),
+        description: z.string().max(5000).nullish(),
+        clientMutationId: z.string().max(100).nullish(),
+      })
+      .strict()
+      .refine(
+        (v) => v.name != null || v.key != null || v.description != null,
+        "Indica al menos uno de: name, key, description.",
+      ),
+    run: async (ctx, raw) => {
+      const input = raw as {
+        id: string;
+        name?: string | null;
+        key?: string | null;
+        description?: string | null;
+      };
+      const project = await updateProject(ctx.workspaceId, input.id, {
+        ...(input.name != null ? { name: input.name } : {}),
+        ...(input.key != null ? { key: input.key } : {}),
+        ...(input.description != null
+          ? { description: input.description }
+          : {}),
+      });
+      return { id: project.id, key: project.key, name: project.name };
     },
   },
   {

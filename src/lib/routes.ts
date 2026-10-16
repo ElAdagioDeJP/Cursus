@@ -17,6 +17,10 @@ export const teamProjects = (ws: string, team: string): Route =>
 export const teamCycles = (ws: string, team: string): Route =>
   `/${ws}/teams/${team}/cycles` as Route;
 export const wsAgent = (ws: string): Route => `/${ws}/agent` as Route;
+export const wsInbox = (ws: string): Route => `/${ws}/inbox` as Route;
+export const wsReviews = (ws: string): Route => `/${ws}/reviews` as Route;
+export const wsMyIssues = (ws: string): Route => `/${ws}/my-issues` as Route;
+export const wsPulse = (ws: string): Route => `/${ws}/pulse` as Route;
 export const teamProject = (ws: string, team: string, project: string): Route =>
   `/${ws}/teams/${team}/projects/${project}` as Route;
 export const issueDetail = (ws: string, team: string, issue: string): Route =>
