@@ -1,12 +1,14 @@
 import Image from "next/image";
+import { connection } from "next/server";
 import { signIn } from "@/auth/config";
 
 // El build de Docker corre sin AUTH_* (env solo existe en runtime en Dokploy).
-// Sin esto Next prerenderiza /sign-in en build con IDs vacíos y el HTML
-// queda congelado en "no configurado" aunque el contenedor sí tenga env.
-export const dynamic = "force-dynamic";
+// Con `cacheComponents` no se puede usar `export const dynamic`; se usa
+// `await connection()` + `instant = false` para no prerenderizar en build.
+export const instant = false;
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  await connection();
   // Solo se muestra el botón del provider con credenciales en el entorno.
   // Evita mandar al usuario a un `Error 401: invalid_client` garantizado.
   // Se lee aquí (runtime) y no a nivel módulo (build) a propósito.
